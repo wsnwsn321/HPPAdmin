@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Php7Api" basedir="build" default="name">
+	<tstamp>
+		<format property="date" pattern="yyyy-MM-dd" locale="en,UK" />
+	</tstamp>
+
+	<property environment="env" />
+	<!-- database create/refresh/modify php scripts prefix -->
+	<!-- package -->
+	<property name="module" value="Php7Api" />
+	<property name="dist.dir" value="target" />
+	<property name="version" value="5.0">
+	</property>
+	<property name="build.name" value="${module}${version}-${user.name}-${date}.tar.gz" />
+	<property name="build.file" value="${dist.dir}/${build.name}" />
+	<property name="webroot.dir" value="${basedir}/.." />
+
+
+	<!-- classpath -->
+	<path id="classpath">
+		<fileset dir="ant">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<filterset id="myFilter" begintoken="@" endtoken="@" onmissingfiltersfile="ignore">
+		<filter token="YII_DEBUG.open" value="${YII_DEBUG.open}"/>
+		<filter token="YII_ENV.level" value="${YII_ENV.level}"/>
+		<filter token="database.ip" value="${database.ip}"/>
+		<filter token="database.name" value="${database.name}"/>
+		<filter token="database.user" value="${database.user}"/>
+		<filter token="database.password" value="${database.password}"/>
+	</filterset>
+
+	<!-- get current user name-->
+	<target name="name">
+		<echo>Your user name is ${user.name}.</echo>
+	</target>
+
+	<target name="deploy-oss">
+		<exec executable="/opt/oss_python_sdk/osscmd">
+			<arg line="--id=ZIajPSh4Bm0KhoNV"></arg>
+			<arg line="--key=BNNFIFom1nMDC4phww2pMcdL1OM5XJ"></arg>
+			<arg line="uploadfromdir"></arg>
+			<arg line="../resource/"></arg>
+			<arg line="oss://testhpp/"></arg>
+		</exec>
+	</target>
+
+	<target name="configure" unless="noconf">
+		<echo>Configure environment settings</echo>
+		<copy file="../ConfigurationTemplate/config_db.php" encoding="UTF-8" outputencoding="UTF-8" tofile="../config/db.php" overwrite="yes">
+			<filterset refid="myFilter">
+			</filterset>
+		</copy>
+		<copy file="../ConfigurationTemplate/web_index.php" encoding="UTF-8" outputencoding="UTF-8" tofile="../web/index.php" overwrite="yes">
+			<filterset refid="myFilter">
+			</filterset>
+		</copy>
+	</target>
+
+	<target name="configure-remote" depends="configure" unless="noconf">
+		<echo>Configure environment settings for remote host</echo>
+		<scp file="../config/db.php" verbose="true" todir="${web.host.user}@${web.host}:${web.host.webroot}/config" passphrase=""  port="22" keyfile="${web.host.pwd}" trust="true" />
+		<scp file="../web/index.php" verbose="true" todir="${web.host.user}@${web.host}:${web.host.webroot}/web" passphrase="" port="22" keyfile="${web.host.pwd}" trust="true" />
+		<!-- <antcall target="clear-cache-remote"></antcall> -->
+	</target>
+
+	<target name="package" depends="configure">
+		<echo>Full package, contains all files required for deploy in a new environment in ${basedir}/../</echo>
+		<tar destfile="${build.file}" longfile="gnu" compression="gzip">
+			<tarfileset dir="${basedir}/../">
+				<exclude name="build.xml" />
+				<exclude name=".svn" />
+				<exclude name=".DS_Store" />
+				<exclude name=".buildpath" />
+				<exclude name=".project" />
+				<exclude name=".settings/**" />
+				<exclude name="runtime/**" />
+				<exclude name="build/target/**"/>
+			</tarfileset>
+		</tar>
+	</target>
+
+	<target name="remote-prepare">
+		<sshexec host="${web.host}" username="${web.host.user}" port="22" keyfile="${web.host.pwd}" command="
+			mkdir -p ${web.host.webroot}/../builds;
+			" trust="true" />
+	</target>
+
+	<target name="upload" depends="package" unless="noup">
+		<fail unless="web.host.webroot" message="Please specify ${web.host.webroot}. eg, -Dwebroot.dir=/var/www/htdocs/" />
+		<antcall target="remote-prepare" />
+		<echo>Uploading build tar file to ${web.host.webroot}/../builds</echo>
+		<echo>This will take a few minutes...</echo>
+		<scp file="${build.file}" verbose="true" todir="${web.host.user}@${web.host}:${web.host.webroot}/../builds" passphrase="" port="22" keyfile="${web.host.pwd}" trust="true" />
+	</target>
+
+	<!-- chmod under the remote server -->
+	<target name="change_mod_all">
+		<sshexec host="${web.host}" username="${web.host.user}" port="22" keyfile="${web.host.pwd}"
+			command="chmod 755 ${web.host.webroot}" trust="true" />
+		<sshexec host="${web.host}" username="${web.host.user}" port="22" keyfile="${web.host.pwd}"
+				 command="chown www.www -R ${web.host.webroot}" trust="true" />
+	</target>
+
+	<!-- deloy to remote host -->
+	<target name="deploy-remote">
+		<fail unless="web.host.webroot" message="Please specify ${web.host.webroot}. eg, -Dwebroot.dir=/var/www/htdocs/" />
+		<antcall target="upload"/>
+		<echo>Deploy server ${web.host}, under ${web.host.webroot}</echo>
+		<sshexec host="${web.host}" username="${web.host.user}" port="22" keyfile="${web.host.pwd}"
+			command="tar -h -zxf ${web.host.webroot}/../builds/${build.name} -C ${web.host.webroot}/;" trust="true" />
+		<antcall target="configure-remote"/>
+		<antcall target="change_mod_all"/>
+	</target>
+</project>
