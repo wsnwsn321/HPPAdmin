@@ -38,11 +38,11 @@ class EnManagerController extends LoginController
     private function checkTheStatusOfTheContest(& $c)
     {
         $c->status !== "open"
-            && parent::error(401, "Contest being status can't be edited.");
+            && parent::error(401, "当前比赛的状态不能被编辑!");
 
         $startData = strtotime($c->enroll_start_date.' 00:00:00');
         $endData =  strtotime($c->enroll_end_date.' 23:59:59');
         (!(time() >= $startData && time() <= $endData))
-            && parent::error(402, "The deadline of enrolling is exceeded");
+            && parent::error(402, "报名超过截至日期.");
     }
 }

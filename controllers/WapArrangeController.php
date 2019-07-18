@@ -50,23 +50,29 @@ class WapArrangeController extends Controller
         }
         $c->contest->scenario = Contests::SCENARIO_DEFAULT;
 
-        // Reset contest
-        if (($r = $c->_resetContest($this)) !== true) {
-            return array_merge($this->retMsg["vf"], ["data" => $r]);
+        if ((int) trim(\yii::$app->getRequest()->post("skipGroup", 0)) === 0) {
+            // Reset contest
+            if (($r = $c->_resetContest($this)) !== true) {
+                return array_merge($this->retMsg["vf"], ["data" => $r]);
+            }
+
+            // Change status of contest
+            if (!$c->contest->isReadyForSchedule()) {
+                $c->contest->setAttribute("status", "closed");
+                $c->contest->save();
+            }
+
+            // Start schedule
+            $c->checkEnrollDataIntegrity($c->contest);
+
+            // Init group
+            if (($r = $c->initGroup($this)) !== true) {
+                return array_merge($this->retMsg["vf"], ["data" => $r]);
+            }
         }
 
-        // Change status of contest
-        if (! $c->contest->isReadyForSchedule()) {
-            $c->contest->setAttribute("status", "closed");
-            $c->contest->save();
-        }
-
-        // Start schedule
-        $c->checkEnrollDataIntegrity($c->contest);
-
-        // Init group
-        if (($r = $c->initGroup($this)) !== true) {
-            return array_merge($this->retMsg["vf"], ["data" => $r]);
+        if (trim(\yii::$app->getRequest()->post("preset", "")) == "group") {
+            return array_merge($this->retMsg["success"], ["data" => "Split group succeed"]);
         }
 
         // Init match

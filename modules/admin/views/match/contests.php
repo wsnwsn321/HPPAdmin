@@ -57,7 +57,7 @@ echo GridView::widget([
 
         [  'class' => 'yii\grid\ActionColumn',
             'header' => '管理',
-            'template' => '{people}{credit}{schedule}',
+            'template' => '{people}&nbsp;&nbsp;&nbsp;{schedule} &nbsp;&nbsp {fee}',
             'buttons' => [
                 "people" => function ($url, $model, $page) {
                     return Html::button("人员管理",[
@@ -73,7 +73,13 @@ echo GridView::widget([
                     },
                 "schedule" => function ($url, $model, $key) {
                     return Html::button("修改对阵",[
-                        "onClick" => "window.location.href='/admin/en-manager/enrollments?id=".$model->id."'",
+                        "onClick" => "window.location.href='/admin/schedule?id=".$model->id."&returnURL=".urlencode($_SERVER['REQUEST_URI'])."'",
+                        "class" => "btn btn-default",
+                    ]);
+                },
+                "fee" => function ($url, $model, $key) {
+                    return Html::button("费用管理",[
+                        "onClick" => "window.location.href='/admin/payment/enroller?id=".$model->id."&returnURL=".urlencode($_SERVER['REQUEST_URI'])."'",
                         "class" => "btn btn-default",
                     ]);
                 },

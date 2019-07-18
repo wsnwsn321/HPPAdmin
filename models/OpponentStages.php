@@ -33,4 +33,12 @@ class OpponentStages extends CActiveRecord
 
         return array_merge($validates, parent::onCreate($defaults));
     }
+
+    public function getOpponent()
+    {
+        return $this->hasOne(
+            Opponents::className(),
+            ["id" => "opponent_id"]
+        );
+    }
 }

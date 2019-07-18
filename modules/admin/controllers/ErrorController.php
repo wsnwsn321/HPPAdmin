@@ -7,6 +7,14 @@ class ErrorController extends \yii\web\Controller
     public $layout = "@vendor/dmstr/yii2-adminlte-asset/example-views/yiisoft/yii2-app/layouts/main.php";
     public $errorView = "@vendor/dmstr/yii2-adminlte-asset/example-views/yiisoft/yii2-app/site/error.php";
 
+    public function init()
+    {
+        parent::init();
+        if (\yii::$app->getUser()->isGuest) {
+            $this->layout = "@app/views/layouts/main.php";
+        }
+    }
+
     public function actionIndex()
     {
         $exception = \Yii::$app->errorHandler->exception;

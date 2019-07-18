@@ -17,6 +17,11 @@ use yii\helpers\Html;
         "contestId" => $c->id,
         "enrollments" => $c->enrollments
 ]); ?>
+<div class="box" style="margin-bottom: 0px;">
+    <div class="box-header">
+        <h3 class="box-title">已报名人员列表</h3>
+    </div>
+</div>
 <?php
 $query = \app\models\Enrollments::find()->where(["contest_id" => $c->id]);
 $dataProvider = new \yii\data\ActiveDataProvider([
@@ -25,6 +30,7 @@ $dataProvider = new \yii\data\ActiveDataProvider([
 ]);
 echo \kartik\grid\GridView::widget([
     "dataProvider" => $dataProvider,
+    "layout" => "{items}\n{pager}",
     "export" =>false,
     "hover" => true,
     "showFooter" => true,
@@ -35,6 +41,7 @@ echo \kartik\grid\GridView::widget([
             "headerOptions" => ["width" => "5%"]
         ],
         [
+            "label" => "真实姓名",
             "attribute" => "realname",
             "headerOptions" => []
         ],

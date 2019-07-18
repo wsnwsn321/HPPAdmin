@@ -31,12 +31,17 @@
                 'items' => [
                     ['label' => '快乐乒乓微信 SaaS', 'options' => ['class' => 'header']],
                     ['label' => '用户管理', 'icon' => 'child', 'url' => ['/admin/user/index']],
-                    [
-                        'label' => '赛事信息调整', 'icon' => 'calendar', 'url' => '#','items'=>[
+                    ['label' => '赛事信息调整', 'icon' => 'calendar', 'url' => '#','items'=>[
                             ['label' => '赛事信息修改', 'icon' => 'edit', 'url' => ['/admin/match/match-info'],],
                         ]
                     ],
-                    ['label' => '报名费用管理', 'icon' => ' fa-rmb', 'url' => ['/admin/user/index']],
+                    ['label' => '报名费用管理', 'icon' => ' fa-rmb', 'url' =>'#','items'=>[
+                            ['label' => '赛事流水', 'icon' => 'fa-shopping-cart', 'url' => ['/admin/payment/check-bill'],],
+
+
+                        ]
+
+                    ],
                     /*['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
                     [
                         'label' => ' tools',

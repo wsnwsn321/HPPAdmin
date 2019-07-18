@@ -19,7 +19,7 @@ class games extends ActiveRecord
     {
         // 第一个参数为要关联的子表模型类名，
         // 第二个参数指定 通过子表的customer_id，关联主表的id字段
-        return $this->hasOne(Contests::className(), ['id' => 'id']);
+        return $this->hasOne(Contests::className(), ['game_id' => 'id']);
     }
     public function scenarios()
     {

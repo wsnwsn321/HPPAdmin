@@ -29,6 +29,8 @@ class LoginController extends \yii\web\Controller
     }
 
     public static function error($code = 400, $message = "") {
-        throw new \yii\web\HttpException($code, $message);
+        //throw new \yii\web\HttpException($code, $message);
+        echo('<script>alert("'.trim($message).'");window.history.go(-1);</script>');
+        exit();
     }
 }

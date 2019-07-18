@@ -20,7 +20,7 @@ if ($name != '') {
         ->where($firmCond)
         ->andWhere(["like", "fullname", $name."%", false])
         /*->andWhere([
-            "or",f
+            "or",
             ["like", "nickname", $name . '%', false],
             ["like", "fullname", $name . '%', false]
         ])*/->andWhere([
@@ -37,10 +37,10 @@ if ($name != '') {
         <div class="col-xs-12">
             <div class="box">
                 <div class="box-header">
-                    <h3 class="box-title"><?php echo($contestName); ?></h3>
+                    <h3 class="box-title">搜索并为 <font color="#3c8dbc"><?php echo($contestName); ?></font> 添加报名选手 :</h3>
                     <div class="box-tools">
-                        <div class="input-group input-group-sm" style="width: 240px;">
-                            <input type="text" name="table_search" value="<?php echo($name); ?>" class="form-control pull-right" placeholder="请输入用户真实姓名或微信昵称">
+                        <div class="input-group input-group-sm" style="width: 166px;">
+                            <input type="text" name="table_search" value="<?php echo($name); ?>" class="form-control pull-right" placeholder="请输入用户真实姓名">
                             <div class="input-group-btn">
                                 <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                             </div>
@@ -52,9 +52,9 @@ if ($name != '') {
                     <table class="table table-hover">
                         <tr>
                             <th width="10%">ID</th>
-                            <th width="40%">Nickname</th>
-                            <th width="40%">FullName</th>
-                            <th>Operation</th>
+                            <!-- <th width="40%">Nickname</th> -->
+                            <th width="80%">真实姓名</th>
+                            <th>操作</th>
                         </tr>
                         <?php if ($name != '') echo \yii\widgets\ListView::widget([
                             'dataProvider' => $dataProvider,

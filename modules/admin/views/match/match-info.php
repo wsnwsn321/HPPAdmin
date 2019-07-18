@@ -72,9 +72,10 @@ echo GridView::widget([
             'template' => '{recharge}',
             'buttons' => [
                 "recharge" => function ($url, $model, $key) {
+                    $contest = $model->contests;
                     return Html::button("进入赛事",[
                         //"onClick" => "window.location.href='/admin/en-manager/enrollments?id=".$model->contests->id."'",
-                        "onClick" => "window.location.href='/admin/match/contests?id=".$model->contests->id."&page=".urlencode($_SERVER['REQUEST_URI'])."'",
+                        "onClick" => "window.location.href='/admin/match/contests?id=".$contest->id."&page=".urlencode($_SERVER['REQUEST_URI'])."'",
                         "class" => "btn btn-default",
                     ]);
                 }

@@ -39,8 +39,8 @@ class Contests extends CActiveRecord
             ["game_id", "integer"],
             ["arena", "string", "length" => [2,50]],
             ["name", "string", "length" => [2,255]],
-            ["enroll_count", "compare", "compareValue" => '2', "operator" => ">=", "message" => "Two players of this contest at least.", "on" => self::SCENARIO_PUBLISHED],
-            ["published", "compare", "compareValue" => '1', "operator" => "!=", "message" => "Contest has published!", "on" => self::SCENARIO_PUBLISHED],
+            ["enroll_count", "compare", "compareValue" => '2', "operator" => ">=", "message" => "一场比赛至少需要两个用户.", "on" => self::SCENARIO_PUBLISHED],
+            ["published", "compare", "compareValue" => '1', "operator" => "!=", "message" => "比赛已经被发布!", "on" => self::SCENARIO_PUBLISHED],
             [["scheduled_start_date", "scheduled_end_date"], "compare", "type" => "strtotime", "compareValue" => date("Y-m-d", strtotime("+0 day")), "operator" => ">=", "on" => self::SCENARIO_CREATE],
             [["enroll_start_date", "enroll_end_date"], "compare", "type" => "strtotime", "compareValue" => date("Y-m-d"), "operator" => ">=", "on" => self::SCENARIO_CREATE],
             ["scheduled_end_date", "compare", "compareAttribute" => "scheduled_start_date", "type" => "strtotime", "operator" => ">="]
@@ -67,7 +67,7 @@ class Contests extends CActiveRecord
         return [
             [
                 "enroll_end_date",
-                "value" => date("Y-m-d", (strtotime($this->scheduled_start_date)))
+                "value" => date("Y-m-d", (strtotime($this->scheduled_end_date)))
             ]
         ];
     }
@@ -244,6 +244,12 @@ class Contests extends CActiveRecord
     public function getSchedule_group()
     {
         return $this->hasOne(ScheduleGroups::className(), ["contest_id" => "id"]);
+    }
+
+    /** @return \yii\db\ActiveQuery */
+    public function getOpponents()
+    {
+        return $this->hasMany(Opponents::className(), ["contest_id" => "id"]);
     }
 
     /**
