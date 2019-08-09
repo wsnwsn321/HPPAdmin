@@ -30,18 +30,23 @@
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
                 'items' => [
                     ['label' => '快乐乒乓微信 SaaS', 'options' => ['class' => 'header']],
-                    ['label' => '用户管理', 'icon' => 'child', 'url' => ['/admin/user/index']],
+                    ['label' => '用户管理', 'icon' => 'users', 'url' => ['/admin/user/index']],
                     ['label' => '赛事信息调整', 'icon' => 'calendar', 'url' => '#','items'=>[
                             ['label' => '赛事信息修改', 'icon' => 'edit', 'url' => ['/admin/match/match-info'],],
                         ]
                     ],
                     ['label' => '报名费用管理', 'icon' => ' fa-rmb', 'url' =>'#','items'=>[
-                            ['label' => '赛事流水', 'icon' => 'fa-shopping-cart', 'url' => ['/admin/payment/check-bill'],],
+                            ['label' => '赛事流水', 'icon' => 'shopping-cart', 'url' => ['/admin/payment/check-bill'],],
 
 
                         ]
-
                     ],
+                    ['label' => '俱乐部管理', 'icon' => 'handshake-o', 'url' =>'#','items'=>[
+                        ['label' => '俱乐部新闻管理', 'icon' => 'newspaper-o', 'url' => ['/admin/club/index'],],
+                        ['label' => '俱乐部简介管理', 'icon' => 'id-card', 'url' => ['/admin/club/intro'],],
+                        ['label' => '俱乐部教练管理', 'icon' => 'user-plus', 'url' => ['/admin/club/coach'],],
+                    ]
+                    ]
                     /*['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
                     [
                         'label' => ' tools',
