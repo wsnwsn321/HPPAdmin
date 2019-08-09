@@ -1,6 +1,6 @@
 <?php
 
-use app\modules\admin\models\wechatpay_orderinfo;
+use app\modules\admin\models\wechatpay_orderinfos;
 use kartik\grid\GridView;
 use kartik\editable\Editable;
 use yii\data\ActiveDataProvider;
@@ -8,7 +8,7 @@ use app\modules\admin\models\firmusers;
 use app\assets\DeleteAllAsset;
 $v = $_GET['id'];
 $page = $_GET['page'];
-$query = wechatpay_orderinfo::find()->where(['contest_id'=>$v])->andWhere(['confirm_pay'=>1])->with('userName');
+$query = wechatpay_orderinfos::find()->where(['contest_id'=>$v])->andWhere(['<>','confirm_pay',0])->with('userName');
 $dataProvider = new ActiveDataProvider(
     [
         'query' => $query,
@@ -32,6 +32,17 @@ echo GridView::widget([
         'out_trade_no',
         'total_fee',
         'return_timestamp',
-    ],
+        [
+                'label' => '支付状态',
+            'value' => function ($model) {
+                $state = [
+                        '0' => '未支付',
+                        '1' => '已支付',
+                        '2' => '已取消',
+                ];
+            return $state[$model->confirm_pay];
+            },
+        ],
+    ]
 ]);
 ?>
